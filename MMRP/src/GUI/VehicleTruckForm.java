@@ -168,7 +168,7 @@ public class VehicleTruckForm extends JPanel {
 	private String setName(){
 		int randomInt;
 		boolean goodNumber = false;
-		String name = "NEWPLANE";
+		String name = "NEWTRUCK";
 		ArrayList<Truck> trucks = new ArrayList<Truck>();
 		int trycounter=0;
 		if(contractorDropDown!=null)
