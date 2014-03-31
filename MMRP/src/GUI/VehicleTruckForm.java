@@ -4,6 +4,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -11,26 +12,24 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-import core.Truck;
+import core.Plane;
 import core.Vehicle;
 
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.JTabbedPane;
 
-public class VehicleTruckForm extends JPanel {
+public class VehiclePlaneForm extends JPanel {
 	JLabel contractorLabel,nameLabel,statusLabel;
 	JComboBox<String> contractorDropDown;
 	JTextField nameText;
 	VehicleSegmentTable vst;
 	//private Vehicle t;
-	private Truck t;
+	private Plane p;
 	private JTabbedPane tabbedPane;
 	private JPanel basic;
 	private JComboBox<String> status;
-	public VehicleTruckForm()
+	public VehiclePlaneForm()
 	{
 		String[] contractor = {Vehicle.Contractors.DHL.toString(),Vehicle.Contractors.FedEX.toString(),Vehicle.Contractors.UPS.toString(),Vehicle.Contractors.USPS.toString()};
 		setLayout(new FormLayout(new ColumnSpec[] {
@@ -94,14 +93,12 @@ public class VehicleTruckForm extends JPanel {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
+		
 		//add(contractorDropDown, "4, 20, left, top");
 		nameLabel = new JLabel("Name");
 		basic.add(nameLabel, "2, 2, left, center");
 		//nameText.setSize(69, Integer.parseInt(FormFactory.LINE_GAP_ROWSPEC.toString()));
 		//add(nameLabel,"2, 22, center, center");
-		nameText = new JTextField(20);
-		nameText.setText(setName());
-		basic.add(nameText, "4, 2, left, top");
 		contractorLabel = new JLabel();
 		contractorLabel.setText("Contractor");
 		basic.add(contractorLabel, "2, 4, left, center");
@@ -123,6 +120,9 @@ public class VehicleTruckForm extends JPanel {
 				basic.add(statusLabel, "2, 6, left, center");
 			this.status=new JComboBox(Vehicle.Status.values());
 			basic.add(status, "4, 6, left, top");
+		nameText = new JTextField(20);
+		nameText.setText(setName());
+		basic.add(nameText, "4, 2, left, top");
 		this.setTypeForm();
 	}
 	private void loadVehicle(int id)
@@ -130,10 +130,10 @@ public class VehicleTruckForm extends JPanel {
 		clearGUI();
 		if(id>0)
 		{
-			t=Truck.Load(id);
-			setTruck();
-		}			
-		vst.ShowTable(t);
+			p=Plane.Load(id);
+			setPlane();
+		}
+		vst.ShowTable(p);
 	}
 	public void showPanel()
 	{
@@ -160,26 +160,23 @@ public class VehicleTruckForm extends JPanel {
 	{
 
 	}
-	private void setTruck()
+	private void setPlane()
 	{
-		this.contractorDropDown.setSelectedItem(Vehicle.loadContractor(t.getContractor()));
-		this.nameText.setText(t.getTruckName());
+		this.contractorDropDown.setSelectedItem(Vehicle.loadContractor(p.getContractor()));
+		this.nameText.setText(p.getPlaneName());
 	}
 	private String setName(){
 		int randomInt;
 		boolean goodNumber = false;
-		String name = "NEWTRUCK";
-		ArrayList<Truck> trucks = new ArrayList<Truck>();
+		String name = "";
+		ArrayList<Plane> planes = new ArrayList<Plane>();
 		int trycounter=0;
-		if(contractorDropDown!=null)
-		{
-		while(!goodNumber)
-		{
+		while(!goodNumber){
 			randomInt = (int)Math.floor(Math.random()*10000);
-			name = this.contractorDropDown.getSelectedItem().toString() + "Truck" + randomInt;
-			trucks = Truck.LoadAll("Where TruckName ='" +name + "'");
+			name = this.contractorDropDown.getSelectedItem().toString() + "Plane" + randomInt;
+			planes = Plane.LoadAll("Where PlaneName ='" +name + "'");
 			trycounter++;
-			if(!(trucks.size() > 0)){
+			if(!(planes.size() > 0)){
 				goodNumber = true;
 			}
 			else
@@ -190,7 +187,6 @@ public class VehicleTruckForm extends JPanel {
 					goodNumber=true;
 				}
 			}
-		}
 		}
 		return name;
 	}
