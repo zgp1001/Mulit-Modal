@@ -3,6 +3,8 @@ package GUI;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -18,15 +20,25 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class VehicleCargoForm extends JPanel {
-	JLabel contractorLabel,nameLabel;
+	JLabel contractorLabel,nameLabel,statusLabel;
 	JComboBox<String> contractorDropDown;
 	JTextField nameText;
+	VehicleSegmentTable vst;
 	//private Vehicle t;
 	private Cargo c;
+	private JTabbedPane tabbedPane;
+	private JPanel basic;
+	private JComboBox<String> status;
 	public VehicleCargoForm()
 	{
 		String[] contractor = {Vehicle.Contractors.DHL.toString(),Vehicle.Contractors.FedEX.toString(),Vehicle.Contractors.UPS.toString(),Vehicle.Contractors.USPS.toString()};
 		setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("48px"),
+				ColumnSpec.decode("69px:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("56px"),
 				ColumnSpec.decode("48px"),
 				ColumnSpec.decode("69px"),
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -35,14 +47,63 @@ public class VehicleCargoForm extends JPanel {
 				ColumnSpec.decode("56px"),},
 			new RowSpec[] {
 				FormFactory.LINE_GAP_ROWSPEC,
+				RowSpec.decode("20px:grow"),
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.LINE_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,}));
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		basic = new JPanel();
+		
+		add(tabbedPane, "2, 2, 7, 17, fill, fill");
+		basic.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.UNRELATED_GAP_COLSPEC,
+				ColumnSpec.decode("103px"),
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("58px"),
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("10px"),
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("37px"),
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("56px"),},
+			new RowSpec[] {
+				FormFactory.LINE_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
+				FormFactory.LINE_GAP_ROWSPEC,
 				RowSpec.decode("20px"),
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
-		 contractorLabel = new JLabel();
+		
+		//add(contractorDropDown, "4, 20, left, top");
+		nameLabel = new JLabel("Name");
+		basic.add(nameLabel, "2, 2, left, center");
+		//nameText.setSize(69, Integer.parseInt(FormFactory.LINE_GAP_ROWSPEC.toString()));
+		//add(nameLabel,"2, 22, center, center");
+		contractorLabel = new JLabel();
 		contractorLabel.setText("Contractor");
-		add(contractorLabel, "2, 2, center, center");
+		basic.add(contractorLabel, "2, 4, left, center");
+		tabbedPane.addTab("Basic", basic);
+		//add(contractorLabel, "2, 20, center, center");
 		contractorDropDown = new JComboBox(Vehicle.Contractors.values());
 		contractorDropDown.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
@@ -53,13 +114,16 @@ public class VehicleCargoForm extends JPanel {
 			}
 		});
 		contractorDropDown.setSelectedItem(Vehicle.Contractors.DHL);
-		add(contractorDropDown, "4, 2, left, top");
-		 nameLabel = new JLabel("Name");
+		basic.add(contractorDropDown, "4, 4, left, top");
+			this.statusLabel=new JLabel("Status");
+			//	add(nameText,"4, 22, left, top");
+				basic.add(statusLabel, "2, 6, left, center");
+			this.status=new JComboBox(Vehicle.Status.values());
+			basic.add(status, "4, 6, left, top");
 		nameText = new JTextField(20);
 		nameText.setText(setName());
-		//nameText.setSize(69, Integer.parseInt(FormFactory.LINE_GAP_ROWSPEC.toString()));
-		add(nameLabel,"2, 4, center,center");
-		add(nameText,"4, 4, left, top");
+		basic.add(nameText, "4, 2, left, top");
+		this.setTypeForm();
 	}
 	private void loadVehicle(int id)
 	{
@@ -125,5 +189,14 @@ public class VehicleCargoForm extends JPanel {
 			
 		}
 		return name;
+	}
+	private void setTypeForm()
+	{
+		final JPanel segments = new JPanel();
+		vst = new VehicleSegmentTable();
+		segments.add(new JScrollPane(vst));
+		tabbedPane.addTab("Segments",segments);
+		
+		
 	}
 }
